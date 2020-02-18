@@ -3,10 +3,14 @@ package com.integration;
 
 import com.google.appengine.repackaged.org.joda.time.DateTime;
 import com.gpode.SpringBootRestApplication;
+import com.gpode.constants.ServiceConsts;
+import com.gpode.constants.StatusConsts;
 import com.gpode.controllers.CheckServicesController;
-import com.gpode.enums.Service;
-import com.gpode.enums.Status;
-import com.gpode.services.*;
+
+import com.gpode.services.AdsServiceImpl;
+import com.gpode.services.MultiplayerServiceImpl;
+import com.gpode.services.UserServiceImpl;
+import com.gpode.services.UserSupportServiceImpl;
 import okhttp3.OkHttpClient;
 import org.json.JSONObject;
 import org.junit.Assert;
@@ -24,6 +28,8 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+
+import javax.xml.ws.Service;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -44,10 +50,10 @@ public class CheckServiceStatusControllerIntegrationTest {
     private UserSupportServiceImpl userSupportService;
 
     @Mock
-    UserServiceImpl userService;
+    private UserServiceImpl userService;
 
     @Mock
-    AdsServiceImpl adsService;
+    private AdsServiceImpl adsService;
 
     @InjectMocks
     private CheckServicesController checkServicesController;
@@ -94,9 +100,9 @@ public class CheckServiceStatusControllerIntegrationTest {
 
 
         JSONObject responseJson = new JSONObject();
-        responseJson.put(Service.MULTIPLAYER.label, Status.DISABLED.label);
-        responseJson.put(Service.USER_SUPPORT.label, dt.isAfter(dtAfter) && dt.isBefore(dtBefore) ? Status.ENABLED.label : Status.DISABLED.label);
-        responseJson.put(Service.ADS.label, Status.ENABLED.label);
+        responseJson.put(ServiceConsts.MULTIPLAYER, StatusConsts.DISABLED);
+        responseJson.put(ServiceConsts.USER_SUPPORT, dt.isAfter(dtAfter) && dt.isBefore(dtBefore) ? StatusConsts.ENABLED : StatusConsts.DISABLED);
+        responseJson.put(ServiceConsts.ADS, StatusConsts.ENABLED);
 
         Assert.assertEquals(responseJson.toString(), res.getResponse().getContentAsString());
     }

@@ -4,12 +4,10 @@ import com.gpode.Model.User;
 import com.gpode.constants.QueryParamConsts;
 import com.gpode.constants.ServiceConsts;
 import com.gpode.constants.StatusConsts;
-import com.gpode.enums.QueryParameter;
 import com.gpode.services.AdsService;
 import com.gpode.services.MultiplayerService;
 import com.gpode.services.UserService;
 import com.gpode.services.UserSupportService;
-
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -76,7 +74,7 @@ public class CheckServicesController {
                 // if it doesnt exist we create and save a new one
                 user = new User();
                 user.setUserId(Long.parseLong(userId));
-                user.setApiCalls(1);;
+                user.setApiCalls(1);
                 userService.insertUser(user);
             }
 
