@@ -2,15 +2,16 @@
 
 Google app engine standard REST API application.
 
-The application provides the status (availability) of three services (multiplayer, user support and ads).
+The application provides the status (availability) of three services (multiplayer, user support and ads). 
 
-It should accept three query parameters.
+It should accept three query parameters (HTTP GET).
  - timezone: timezone of the user
  - userId 
  - cc: country code
 
 
 The service returns three statuses based upon the availability of a service. A service can either be `enabled` or `disabled`.
+To use the service
 ```json
 {
     "multiplayer": "disabled",
