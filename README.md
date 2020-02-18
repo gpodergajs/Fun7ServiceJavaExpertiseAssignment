@@ -40,7 +40,10 @@ To build the project run
 
 The API was build with the Spring framework, and also uses Datastore for data persistance.
 Additional dependencies include
- - The low level persistance API objectify
+ - The low level persistance API objectify (which implements automatic caching)
  - Junit
  - Vadin (for json formation)
+ 
+ There may be some issues with slow saving of information into the datastore.
+ Loggin was not implemented.
 
