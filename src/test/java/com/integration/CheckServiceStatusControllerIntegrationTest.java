@@ -16,9 +16,8 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -30,16 +29,16 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = SpringBootRestApplication.class)
-@AutoConfigureMockMvc
+@ComponentScan(basePackageClasses = SpringBootRestApplication.class)
 public class CheckServiceStatusControllerIntegrationTest {
 
-    @Autowired
-    MockMvc mockMvc;
+    private MockMvc mockMvc;
 
     @Mock
-    private MultiplayerServiceImpl mutliplayerService;
+    private MultiplayerServiceImpl multiplayerService;
 
     @Mock
     private UserSupportServiceImpl userSupportService;
@@ -56,13 +55,12 @@ public class CheckServiceStatusControllerIntegrationTest {
     private MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
     private OkHttpClient httpClient;
 
-
-
     @Before
     public void preTest(){
+
         MockitoAnnotations.initMocks(this);
         mockMvc = MockMvcBuilders
-                .standaloneSetup(checkServicesController)
+                .standaloneSetup(CheckServicesController.class)
                 .build();
 
         queryParams.set("timezone","Europe/Ljubljana");
@@ -72,7 +70,6 @@ public class CheckServiceStatusControllerIntegrationTest {
         httpClient = new OkHttpClient.Builder().build();
 
     }
-
 
     @Test
     public void controllerTest() throws Exception {
@@ -102,16 +99,12 @@ public class CheckServiceStatusControllerIntegrationTest {
         responseJson.put(Service.ADS.label, Status.ENABLED.label);
 
         Assert.assertEquals(responseJson.toString(), res.getResponse().getContentAsString());
-
-
     }
 
     @Test
     public void requestBodyTest(){
 
     }
-
-
 
 
 }
