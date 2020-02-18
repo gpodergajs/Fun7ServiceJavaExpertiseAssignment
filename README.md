@@ -45,5 +45,5 @@ Additional dependencies include
  - Vadin (for json formation)
  
  There may be some issues with slow saving of information into the datastore.
- Loggin was not implemented.
+ Logging was not implemented.
 
