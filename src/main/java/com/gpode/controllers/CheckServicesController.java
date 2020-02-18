@@ -1,22 +1,16 @@
 package com.gpode.controllers;
 
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
-
-import com.google.gson.JsonObject;
 import com.gpode.Model.User;
+import com.gpode.constants.QueryParamConsts;
+import com.gpode.constants.ServiceConsts;
+import com.gpode.constants.StatusConsts;
 import com.gpode.enums.QueryParameter;
-import com.gpode.enums.Service;
-import com.gpode.enums.Status;
 import com.gpode.services.AdsService;
 import com.gpode.services.MultiplayerService;
 import com.gpode.services.UserService;
 import com.gpode.services.UserSupportService;
 
 import org.json.JSONObject;
-import org.slf4j.ILoggerFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -51,12 +45,12 @@ public class CheckServicesController {
             @RequestParam("userId") String userId,
             @RequestParam("cc") String cc
     ){
-        //DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
+
 
         HashMap<String,String> queryMap = new HashMap<String,String>();
-        queryMap.put(QueryParameter.TIMEZONE.label, timezone);
-        queryMap.put(QueryParameter.CC.label, cc);
-        queryMap.put(QueryParameter.USER_ID.label, userId);
+        queryMap.put(QueryParamConsts.TIMEZONE, timezone);
+        queryMap.put(QueryParamConsts.CC, cc);
+        queryMap.put(QueryParamConsts.USER_ID, userId);
 
         // we check if the params are null or empty
         if(queryMap.containsValue(null) || queryMap.containsValue("")){
@@ -72,10 +66,10 @@ public class CheckServicesController {
 
             // if it exists we increment the api call property (relevant for the multiplayer service
             if (user != null) {
-                System.out.println(user.getApiCalls());
+                //System.out.println(user.getApiCalls());
                 int apiCalls = user.getApiCalls() + 1;
                 user.setApiCalls(apiCalls);
-                System.out.println(user.getApiCalls());
+                //System.out.println(user.getApiCalls());
                 userService.updateUser(user);
 
             } else {
@@ -86,14 +80,15 @@ public class CheckServicesController {
                 userService.insertUser(user);
             }
 
+            // we get the status and build a response entity
             boolean isMultiplayerServiceAvailable = multiplayerService.getMultiplayerServiceStatus(user.getApiCalls());
             boolean isAdsServiceAvailable = adsService.getAdsServiceStatus(cc);
-            boolean isUserSupportServiceAvailable = userSupportService.getUserSupportServiceStatus();
+            boolean isUserSupportServiceAvailable = userSupportService.getUserSupportServiceStatus(timezone);
 
             JSONObject jObj = new JSONObject();
-            jObj.put(Service.ADS.label, isAdsServiceAvailable ? Status.ENABLED.label : Status.DISABLED.label);
-            jObj.put(Service.MULTIPLAYER.label, isMultiplayerServiceAvailable ? Status.ENABLED.label : Status.DISABLED.label);
-            jObj.put(Service.USER_SUPPORT.label, isUserSupportServiceAvailable ? Status.ENABLED.label : Status.DISABLED.label);
+            jObj.put(ServiceConsts.ADS, isAdsServiceAvailable ? StatusConsts.ENABLED : StatusConsts.DISABLED);
+            jObj.put(ServiceConsts.MULTIPLAYER, isMultiplayerServiceAvailable ? StatusConsts.ENABLED : StatusConsts.DISABLED);
+            jObj.put(ServiceConsts.USER_SUPPORT, isUserSupportServiceAvailable ? StatusConsts.ENABLED : StatusConsts.DISABLED);
 
             return ResponseEntity
                     .status(HttpStatus.OK)
@@ -102,7 +97,8 @@ public class CheckServicesController {
         }catch (Exception e){
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .build();
+                    .body(e.toString());
+
         }
     }
 
