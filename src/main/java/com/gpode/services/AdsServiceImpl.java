@@ -16,13 +16,10 @@ public class AdsServiceImpl implements AdsService {
     private OkHttpClient httpClient;
     private final String uri = "https://us-central1-o7tools.cloudfunctions.net/fun7-ad-partner";
 
-    public AdsServiceImpl(){
-        InstantiateHttpClient("fun7user","fun7pass");
-    }
 
     public Boolean getAdsServiceStatus(String cc) {
         try {
-
+            InstantiateHttpClient("fun7user", "fun7pass");
 
             Response res = sendGet(uri, cc);
             JSONObject negativeResponse = new JSONObject();

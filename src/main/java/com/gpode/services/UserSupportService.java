@@ -1,5 +1,5 @@
 package com.gpode.services;
 
 public interface UserSupportService {
-    boolean getUserSupportServiceStatus();
+    boolean getUserSupportServiceStatus(String reqTimezone);
 }
